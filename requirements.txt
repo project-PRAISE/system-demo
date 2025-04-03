@@ -1,0 +1,5 @@
+fastapi
+google-generativeai
+pandas
+uvicorn[standard]
+pydantic
