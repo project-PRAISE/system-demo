@@ -1,4 +1,3 @@
-// Helper function to format date and time for filenames
 const getFormattedDateTime = (): string => {
   const now = new Date();
   const year = now.getFullYear();
@@ -10,7 +9,6 @@ const getFormattedDateTime = (): string => {
   return `${year}${month}${day}_${hours}${minutes}${seconds}`;
 };
 
-// Function to trigger file download
 export const downloadFile = (
   content: string,
   filenamePrefix: 'extract' | 'match' | 'categorize',
@@ -21,16 +19,13 @@ export const downloadFile = (
   const mimeType = fileType === 'json' ? 'application/json' : 'text/markdown';
   const blob = new Blob([content], { type: mimeType });
 
-  // Create a temporary link element
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
   link.download = filename;
 
-  // Append to body, click, and remove
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 
-  // Revoke the object URL to free up memory
   URL.revokeObjectURL(link.href);
 };

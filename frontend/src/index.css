@@ -4,27 +4,24 @@
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900; /* Light mode default */
+    @apply bg-gray-50 text-gray-900;
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif; /* Tailwind will override this with Inter via config */
+      sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; /* Smooth theme transition */
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
   }
 
-  /* Dark mode base styles */
   .dark body {
-    @apply bg-gray-900 text-gray-100; /* Dark mode background and text */
-    /* Enhanced animated gradient background for dark mode */
-    background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #475569); /* Slightly deeper blues/grays */
+    @apply bg-gray-900 text-gray-100; 
+    background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #475569);
     background-size: 400% 400%;
-    animation: gradientBG 18s ease infinite; /* Slightly slower animation */
+    animation: gradientBG 18s ease infinite;
   }
 }
 
-/* Background Gradient Animation */
 @keyframes gradientBG {
 	0% { background-position: 0% 50%; }
 	50% { background-position: 100% 50%; }
@@ -32,15 +29,12 @@
 }
 
 
-/* Custom component styles */
 @layer components {
-  /* Custom animations */
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* Subtle blur effect for interactions */
   @keyframes subtleBlurIn {
     from { filter: blur(1px); transform: scale(0.98); opacity: 0.8; }
     to { filter: blur(0); transform: scale(1); opacity: 1; }
@@ -54,7 +48,6 @@
     animation: fadeIn 0.5s ease-out forwards;
   }
 
-  /* Staggered fade-in for sequential elements */
   .animate-fade-in:nth-child(2) {
     animation-delay: 0.1s;
   }
@@ -63,101 +56,89 @@
     animation-delay: 0.2s;
   }
 
-  /* Apply blur animation on hover/focus */
   .interactive-blur {
     transition: filter 0.2s ease-out, transform 0.2s ease-out, opacity 0.2s ease-out;
   }
   .interactive-blur:hover,
-  .interactive-blur:focus-visible { /* Use focus-visible for better accessibility */
+  .interactive-blur:focus-visible {
      animation: subtleBlurIn 0.2s ease-out forwards;
   }
-  /* Optional: Add subtle effect on active/click */
   .interactive-blur:active {
       transform: scale(0.96);
       filter: blur(0.5px);
   }
 
 
-  /* Scrollbar styling - Updated with theme colors */
   pre::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
 
   pre::-webkit-scrollbar-track {
-    @apply bg-gray-100 dark:bg-gray-700; /* Light/Dark track */
+    @apply bg-gray-100 dark:bg-gray-700;
     border-radius: 4px;
   }
 
   pre::-webkit-scrollbar-thumb {
-    @apply bg-primary dark:bg-primary-600; /* Light/Dark thumb */
+    @apply bg-primary dark:bg-primary-600;
     border-radius: 4px;
   }
 
   pre::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary-600 dark:bg-primary-700; /* Light/Dark thumb hover */
+    @apply bg-primary-600 dark:bg-primary-700;
   }
 
-  /* --- Custom Table Styling within Prose --- */
   .prose table, .prose-sm table {
-    @apply w-full table-fixed border-collapse mt-4 mb-4; /* Ensure table styles apply */
+    @apply w-full table-fixed border-collapse mt-4 mb-4;
   }
   .prose thead, .prose-sm thead {
      @apply border-b border-gray-300 dark:border-gray-600;
   }
   .prose th, .prose-sm th {
     @apply bg-gray-100 dark:bg-gray-700 py-3 px-4 text-left font-semibold;
-    /* Override prose defaults if needed */
     border: none;
     border-bottom: 1px solid;
     @apply border-gray-300 dark:border-gray-600;
   }
    .prose td, .prose-sm td {
     @apply py-2 px-4 text-left border-b border-gray-200 dark:border-gray-700;
-     /* Override prose defaults if needed */
      border-top: none;
      border-left: none;
      border-right: none;
   }
   .prose tbody tr, .prose-sm tbody tr {
-     @apply transition-colors duration-150 ease-in-out; /* Smooth hover transition */
+     @apply transition-colors duration-150 ease-in-out;
   }
-  /* Zebra striping */
   .prose tbody tr:nth-child(even), .prose-sm tbody tr:nth-child(even) {
     @apply bg-gray-50 dark:bg-gray-800/50;
   }
-  /* Hover effect */
    .prose tbody tr:hover, .prose-sm tbody tr:hover {
      @apply bg-gray-100 dark:bg-gray-700/50;
    }
-   /* Remove prose's default top/bottom margins from table elements */
    .prose th, .prose td, .prose thead, .prose tbody {
        margin-top: 0;
        margin-bottom: 0;
    }
-   .prose p { /* Prevent extra margins around tables if they are wrapped in <p> by markdown */
+   .prose p { 
        margin-top: 0;
        margin-bottom: 0;
    }
 
-   /* Subtle gradient for sections */
    .section-gradient-light {
        @apply bg-gradient-to-br from-white to-gray-50;
    }
    .section-gradient-dark {
-       @apply dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800/80; /* Subtle dark gradient */
+       @apply dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-800/80;
    }
 
-   /* Base button style with gradient */
    .button-gradient {
         @apply bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 dark:from-primary-600 dark:to-primary-700 dark:hover:from-primary-700 dark:hover:to-primary-800;
    }
 
-   /* Simple text shadow utility */
    .text-shadow-subtle {
        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
    }
-   .dark .text-shadow-subtle { /* Optional: slightly different shadow for dark mode */
+   .dark .text-shadow-subtle {
         text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.15);
    }
 

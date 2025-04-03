@@ -5,10 +5,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', ...defaultTheme.fontFamily.sans], // Add Inter font
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        primary: { // Using teal for vibrancy
+        primary: {
           DEFAULT: '#14b8a6', // teal-500
           '50': '#f0fdfa',
           '100': '#ccfbf1',
@@ -29,6 +29,6 @@ module.exports = {
     },
   },
   plugins: [
-    require('@tailwindcss/typography'), // Add the typography plugin
+    require('@tailwindcss/typography'),
   ],
 };

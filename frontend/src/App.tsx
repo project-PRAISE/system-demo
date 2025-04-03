@@ -5,7 +5,7 @@ import ReviewInput from './components/ReviewInput';
 import ResultDisplay from './components/ResultDisplay';
 import {
   checkHeartbeat,
-  startSession, // Use startSession
+  startSession,
   extractAttributes,
   matchAttributes,
   categorizeAttributes,
@@ -14,7 +14,7 @@ import {
 import { ExtractResponse, MatchResponse, CategorizeResponse } from './types/api'; // Import response types - Corrected Path
 
 const App: React.FC = () => {
-  // API Key State
+  // Key State
   const [apiKey, setApiKey] = useState<string>('');
   const [apiKeyConfigured, setApiKeyConfigured] = useState<boolean>(false);
   const [apiKeyError, setApiKeyError] = useState<string | null>(null);
@@ -32,7 +32,7 @@ const App: React.FC = () => {
   const [categorizedDataResult, setCategorizedDataResult] = useState<CategorizeResponse | null>(null); // Store full response
 
   const [loading, setLoading] = useState<{
-    session: boolean; // Added loading state for starting session
+    session: boolean; 
     extract: boolean;
     match: boolean;
     categorize: boolean;
@@ -42,8 +42,6 @@ const App: React.FC = () => {
     match: false,
     categorize: false
   });
-
-  // activeStep state removed - view is now controlled by apiKeyConfigured and sessionId
 
 
   const handleInputSubmit = async (sellerDesc: string, reviewsList: string[]) => {
@@ -58,7 +56,6 @@ const App: React.FC = () => {
     setExtractedAttributesResult(null); // Reset results
     setMatchedDataResult(null);
     setCategorizedDataResult(null);
-    // setActiveStep removed
 
     try {
       const sessionResponse = await startSession({ seller_description: sellerDesc, reviews: reviewsList });
@@ -82,7 +79,6 @@ const App: React.FC = () => {
     setIsConfiguring(true);
     setApiKeyError(null);
     setServerStatus("Configuring...");
-    // setActiveStep removed
     setSessionId(null); // Reset session on reconfigure
     setExtractedAttributesResult(null);
     setMatchedDataResult(null);
@@ -96,26 +92,22 @@ const App: React.FC = () => {
         const heartbeatResponse = await checkHeartbeat();
         if (heartbeatResponse.status && heartbeatResponse.status.toLowerCase().includes('success')) {
            setServerStatus('Online');
-           // setActiveStep removed
         } else {
            setServerStatus(heartbeatResponse.status || 'Heartbeat Failed');
            setApiKeyConfigured(false);
            setApiKeyError("Heartbeat check failed after configuration.");
-           // setActiveStep removed
         }
       } catch (heartbeatError: any) {
         setServerStatus('Offline (Heartbeat Failed)');
         setApiKeyConfigured(false);
         setApiKeyError(`Heartbeat check failed: ${heartbeatError.response?.data?.detail || heartbeatError.message}`);
         console.error('Heartbeat check failed:', heartbeatError);
-        // setActiveStep removed
       }
     } catch (configError: any) {
       setApiKeyConfigured(false);
       setServerStatus('Configuration Failed');
       setApiKeyError(`Configuration failed: ${configError.response?.data?.detail || configError.message}`);
       console.error('API Key configuration failed:', configError);
-      // setActiveStep removed
     } finally {
       setIsConfiguring(false);
     }
@@ -132,7 +124,6 @@ const App: React.FC = () => {
       // Pass only the session_id
       const result = await extractAttributes({ session_id: sessionId });
       setExtractedAttributesResult(result); // Store the full result object
-      // setActiveStep removed
     } catch (error: any) {
       console.error('Extraction failed:', error);
       alert(`Failed to extract attributes: ${error.response?.data?.detail || error.message}. Please check the console.`);
@@ -149,10 +140,8 @@ const App: React.FC = () => {
     // No need to check extractedAttributesResult locally, backend handles sequence
     try {
       setLoading(prev => ({ ...prev, match: true }));
-      // Pass only the session_id
       const result = await matchAttributes({ session_id: sessionId });
       setMatchedDataResult(result); // Store the full result object
-      // setActiveStep removed
     } catch (error: any) {
       console.error('Matching failed:', error);
       alert(`Failed to match attributes: ${error.response?.data?.detail || error.message}. Please check the console.`);
@@ -169,10 +158,8 @@ const App: React.FC = () => {
     // No need to check matchedDataResult locally, backend handles sequence
     try {
       setLoading(prev => ({ ...prev, categorize: true }));
-      // Pass only the session_id
       const result = await categorizeAttributes({ session_id: sessionId });
       setCategorizedDataResult(result); // Store the full result object
-      // setActiveStep removed
     } catch (error: any) {
       console.error('Categorization failed:', error);
       alert(`Failed to categorize attributes: ${error.response?.data?.detail || error.message}. Please check the console.`);
@@ -181,19 +168,12 @@ const App: React.FC = () => {
     }
   };
 
-  // getStepStyle function removed as activeStep is no longer used
-
-
-
-
-  // Helper for button style - Added dark mode variants, gradient, and blur effect
   const buttonStyle = "inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed button-gradient interactive-blur dark:focus:ring-offset-gray-900"; // Added button-gradient, interactive-blur, removed specific bg/hover colors
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      {/* Changed 'container' to 'max-w-6xl' for centered, constrained width */}
       <main className="flex-grow max-w-6xl mx-auto px-4 py-12 w-full"> {/* Added w-full */}
         <div className="mb-6 text-right">
           <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${

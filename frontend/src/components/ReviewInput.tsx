@@ -52,20 +52,12 @@ const ReviewInput: React.FC<ReviewInputProps> = ({
              console.error("handleSubmit: Parsed JSON is not an array of strings.");
              throw new Error("Parsed JSON is not an array of strings.");
           }
-          // Trim and filter the parsed array to remove empty/whitespace strings
           reviews = parsedReviews.map(review => review.trim()).filter(review => review !== '');
           console.log("handleSubmit: Reviews after JSON parse, map, filter:", JSON.stringify(reviews), "Length:", reviews.length); // Log filtered array
         } catch (jsonError) {
-          // If JSON parsing fails BUT it looked like JSON, show specific error
           console.error("handleSubmit: JSON parsing failed:", jsonError);
           alert("The review input looks like JSON but could not be parsed. Please check the format for errors (e.g., missing commas, incorrect quotes, invalid escape sequences).");
-          return; // Stop processing, do not fall back to newline split
-          // --- Old fallback logic removed ---
-          // console.warn("handleSubmit: JSON parsing failed, falling back to newline split.", jsonError);
-          // const splitReviews = trimmedText.split('\n');
-          // console.log("handleSubmit: Fallback split:", JSON.stringify(splitReviews), "Length:", splitReviews.length);
-          // reviews = splitReviews.map(review => review.trim()).filter(review => review !== '');
-          // console.log("handleSubmit: Reviews after fallback split, map, filter:", JSON.stringify(reviews), "Length:", reviews.length);
+          return; 
         }
       } else {
         // Input doesn't start/end with [], treat as multi-line text
@@ -92,7 +84,6 @@ const ReviewInput: React.FC<ReviewInputProps> = ({
     }
   };
 
-  // Updated styles for textareas and button - Added dark mode variants
   const textareaStyle = "block w-full border border-gray-300 dark:border-gray-600 rounded-lg p-3 shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition duration-150 ease-in-out bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500";
   const buttonStyle = "w-full inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-primary hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-500 dark:focus:ring-offset-gray-800"; // Adjusted dark focus offset
 
@@ -111,7 +102,7 @@ const ReviewInput: React.FC<ReviewInputProps> = ({
           onChange={(e) => setSellerDescription(e.target.value)}
           placeholder="Enter the seller's product description here"
           required
-          disabled={isLoading || isDisabled} // Disable textarea when loading OR component is disabled
+          disabled={isLoading || isDisabled} 
         ></textarea>
       </div>
 
