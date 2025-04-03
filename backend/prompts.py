@@ -93,24 +93,24 @@ Think step by step about each attribute-value pair before deciding its category 
 
 Example:
 
-Seller Description: "This is a 13-inch laptop with a 4K display, 16GB RAM, and 512GB SSD storage."
-Review Attributes: [{"attribute": "screen_size", "value": "13-inch"}, {"attribute": "weight", "value": "lightweight"}]
+Seller Description: "A great pair of pants. It's overall very lightweight, and the fabric is soft."
+Review Attributes: [{"attribute": "size", "value": "10"}, {"attribute": "size", "value": "11"}, {"attribute": "texture", "value": "soft"}, {"attribute": "fit", "value": "loose"}]
 
 Output:
 {
-    "reasoning": "your step by step thinking about each attribute-value pair",
+    "reasoning": "Okay, so the seller description mentions that the fabric is soft. The review mentions the same. The seller description says that it is a pair of pants and the attributes 'size' depends on the user's preference, hence I will discard it. The seller description does not mention the fit of the pants.",
     "result": [
         {
-            "attribute": "screen_size", 
-            "evidence": "13-inch laptop"
+            "attribute": "texture", 
+            "evidence": "the fabric is soft"
             "status": "matching",
-            "value": "13-inch",
+            "value": "soft",
         },
         {
-            "attribute": "weight", 
+            "attribute": "fit", 
             "evidence": null
             "status": "missing",
-            "value": "lightweight",
+            "value": "loose",
         }
     ]
 }
@@ -125,7 +125,7 @@ Avoid overly specific classifications and try to generalize attributes into a fe
 
 **Important**:
 - STRICTLY ENSURE THAT THE ATTRIBUTE NAMES ARE WRITTEN THE SAME WAY AS IN THE INPUT. MAKE SURE TO CHECK SPELLING, CAPITALIZATION and SPACING.
-- REMOVE USER SPECIFIC INFORMATION (for example their Size, their weight, etc.) AND FOCUS ON THE ATTRIBUTES product.
+- REMOVE USER SPECIFIC INFORMATION (for example their particular ordered Size of the product, their order size, etc.) AND FOCUS ON THE ATTRIBUTES product.
 - REMOVE DUPLICATE ATTRIBUTE-VALUE PAIRS.
 
 For example:

@@ -73,10 +73,8 @@ from prompts import grouping_prompt # Import the prompt
 def group_attributes(attributes):
     """Group attributes into logical categories."""
     try:
-        # Explicitly include the prompt in the content, like in run_exp.py
         response_text = grouping_model.generate_content(grouping_prompt + "\n\nattributes: " + str(attributes)).text
 
-        # Robust parsing
         categories = {}
         if '<answer>' in response_text and '</answer>' in response_text:
             answer_part = response_text.split('<answer>', 1)[1].split('</answer>', 1)[0].strip()
@@ -100,7 +98,7 @@ def group_attributes(attributes):
             return {"error": "Invalid format from grouping model"}
 
     except Exception as e:
-        print(f"Error during attribute grouping: {str(e)}") # Log the specific error
+        print(f"Error during attribute grouping: {str(e)}")
         return {"error": f"Failed during grouping: {str(e)}"}
 
 def extract_review_attributes(reviews) -> list:

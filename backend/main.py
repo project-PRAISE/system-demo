@@ -2,7 +2,6 @@ import uuid
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 import google.generativeai as genai
-import os
 import pandas as pd
 from pipeline import (
     check_heartbeat_status,
@@ -10,9 +9,10 @@ from pipeline import (
     extract_review_attributes,
     match_with_description,
     categorize_attributes,
-    organize_results
+    organize_results,
+    test_model
 )
-from utils import (
+from formatting_utils import (
     step1_markdown,
     step2_markdown,
     step3_markdown
@@ -20,17 +20,14 @@ from utils import (
 from pydantic import BaseModel, Field
 from typing import Dict, Any, List
 
-# Global variable to check if API key is configured
 api_key_configured = False
-configured_api_key = None # Store the key if needed, though genai handles it internally
+configured_api_key = None
 
-# In-memory storage for session data
 # Structure: { session_id: { "input": {...}, "step1_result": {...}, "step2_result": {...}, ... } }
 session_data: Dict[str, Dict[str, Any]] = {}
 
 app = FastAPI()
 
-# --- Helper function to check configuration ---
 async def check_configuration():
     if not api_key_configured:
         raise HTTPException(
@@ -38,14 +35,12 @@ async def check_configuration():
             detail="API key not configured. Please configure via /configure endpoint first."
         )
 
-# --- Helper function to get session data ---
-async def get_session(session_id: str = Depends(lambda session_id: session_id)): # Placeholder, will be passed via path/query/body
+async def get_session(session_id: str = Depends(lambda session_id: session_id)):
     session = session_data.get(session_id)
     if not session:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
     return session
 
-# CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -53,8 +48,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Pydantic Models ---
-
+# ---Models---
 class ApiKeyRequest(BaseModel):
     api_key: str = Field(..., min_length=1)
 
@@ -66,22 +60,19 @@ class SessionIdRequest(BaseModel):
     session_id: str
 
 # --- Endpoints ---
-
 @app.post("/configure")
 async def configure_api(request: ApiKeyRequest):
     """Configure the Gemini API key."""
     global api_key_configured, configured_api_key
     try:
         genai.configure(api_key=request.api_key)
-        # Test configuration with a simple call
-        genai.GenerativeModel('gemini-1.5-flash').generate_content('test', generation_config=genai.types.GenerationConfig(max_output_tokens=1))
+        test_model.generate_content('test', generation_config=genai.types.GenerationConfig(max_output_tokens=1))
         api_key_configured = True
         configured_api_key = request.api_key
         return {"message": "API key configured successfully."}
     except Exception as e:
         api_key_configured = False
         configured_api_key = None
-        # Attempt to provide a more specific error message if possible
         error_detail = f"Invalid API key or configuration failed: {str(e)}"
         if "API key not valid" in str(e):
             error_detail = "Invalid API Key provided."
@@ -105,7 +96,7 @@ async def start_session(request: StartSessionRequest):
         "step1_extract": None,
         "step2_match": None,
         "step3_categorize": None,
-        "step4_organize": None, # Added for consistency if needed later
+        "step4_organize": None,
     }
     print(f"Started session: {session_id}")
     return {"session_id": session_id}
@@ -114,12 +105,12 @@ async def start_session(request: StartSessionRequest):
 async def extract_attributes_session(request: SessionIdRequest):
     """Step 1: Extract factual details for a given session."""
     session = await get_session(request.session_id)
-    if not session: # Re-check just in case, though get_session should handle it
+    if not session: # just in case, though get_session should handle it
          raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
 
     if session.get("step1_extract"):
         print(f"Using cached extraction for session: {request.session_id}")
-        return session["step1_extract"] # Return cached result if already done
+        return session["step1_extract"]
 
     try:
         print(f"Running extraction for session: {request.session_id}")
@@ -152,7 +143,7 @@ async def match_attributes_session(request: SessionIdRequest):
         extracted_attributes = session["step1_extract"]["extracted_attributes"]
         all_dataframes = match_with_description(seller_description, extracted_attributes)
 
-        # Convert dataframes to serializable format (list of dicts)
+        # serializable format (list of dicts)
         serializable_dataframes = [df.to_dict('records') for df in all_dataframes]
         markdown_output = step2_markdown(serializable_dataframes) # Use serializable format for markdown
 
@@ -198,7 +189,7 @@ async def categorize_session(request: SessionIdRequest):
                 dataframes.append(pd.DataFrame())
         # --- End Robust Reconstruction ---
 
-        categories, all_attributes = categorize_attributes(dataframes)
+        categories, _ = categorize_attributes(dataframes)
         # Check if categorize_attributes returned an error
         if isinstance(categories, dict) and categories.get('error'):
              raise Exception(f"Categorization pipeline step failed: {categories.get('error')}")
@@ -217,7 +208,6 @@ async def categorize_session(request: SessionIdRequest):
         raise HTTPException(status_code=500, detail=f"Categorization failed: {str(e)}")
 
 
-# Keep the full_pipeline endpoint as is, it doesn't need session management
 @app.post("/full_pipeline", dependencies=[Depends(check_configuration)])
 async def analyze_product(request: StartSessionRequest): # Reuse StartSessionRequest model
     """Run the complete pipeline in one call (no session state used)."""

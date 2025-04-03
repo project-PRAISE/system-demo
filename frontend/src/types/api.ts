@@ -1,5 +1,4 @@
 // --- Request Payloads ---
-
 export interface ApiKeyRequest {
   api_key: string;
 }
@@ -14,7 +13,6 @@ export interface SessionIdRequest {
 }
 
 // --- Response Payloads ---
-
 export interface ConfigureResponse {
   message: string;
 }
@@ -28,7 +26,6 @@ export interface StartSessionResponse {
 }
 
 // Define structure for extracted attributes if not already defined elsewhere
-// Example structure based on backend usage:
 export interface ExtractedAttribute {
   attribute: string;
   value: string;
@@ -39,8 +36,7 @@ export interface ExtractResponse {
   markdown: string;
 }
 
-// Define structure for matched data (dataframes converted to records)
-// Example structure based on backend usage:
+// (DFs converted to records)
 export interface MatchedAttributeRecord {
   attribute: string;
   value: string;
@@ -53,8 +49,6 @@ export interface MatchResponse {
   markdown: string;
 }
 
-// Define structure for categorized results
-// Example structure based on backend usage:
 export interface CategorizedItem {
     attribute: string;
     value: string;
@@ -74,7 +68,6 @@ export interface CategorizeResponse {
   markdown: string;
 }
 
-// --- General Error Response (Optional) ---
 // Structure for potential error responses from FastAPI/HTTPExceptions
 export interface ErrorResponse {
   detail: string;
