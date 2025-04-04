@@ -74,8 +74,8 @@ The core analysis is performed by the backend (`app/backend/pipeline.py`) throug
 The FastAPI application (`app/backend/main.py`) serves as the interface, providing endpoints to:
 *   Configure the API key (`/configure`).
 *   Check API status (`/heartbeat`).
-*   Create a unique session ID for each analysis (`/start_session`).
-*   Run the analysis steps individually using sessions (`/extract`, `/match`, `/categorize`).
+*   Create a unique session ID for each analysis (`/start_session`), by passing the seller decription and a list of reviews.
+*   Run the analysis steps individually using sessions (`/extract`, `/match`, `/categorize`) by passing the session_id obtained from the previous step.
 
 ## Usage
 
