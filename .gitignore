@@ -4,3 +4,4 @@ __pycache__/
 *.ipynb
 node_modules/
 example_request.*
+venv/

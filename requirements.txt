@@ -1,6 +1,7 @@
 fastapi
 google-generativeai
 pandas
+tabulate
 uvicorn[standard]
 pydantic
 gunicorn

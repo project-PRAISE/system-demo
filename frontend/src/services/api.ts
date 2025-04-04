@@ -79,7 +79,6 @@ export const categorizeAttributes = async (data: SessionIdRequest): Promise<Cate
 apiClient.interceptors.response.use(
   response => response,
   error => {
-    // Log or handle errors globally
     console.error('API call failed:', error.response?.data || error.message);
     // Re-throw the error so components can handle it locally if needed
     return Promise.reject(error);
