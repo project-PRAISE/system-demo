@@ -9,9 +9,10 @@ import {
   extractAttributes,
   matchAttributes,
   categorizeAttributes,
-  configureApiKey
+  configureApiKey,
+  toggleParallelProcessing
 } from './services/api';
-import { ExtractResponse, MatchResponse, CategorizeResponse } from './types/api'; // Import response types - Corrected Path
+import { ExtractResponse, MatchResponse, CategorizeResponse } from './types/api';
 
 const App: React.FC = () => {
   // Key State
@@ -27,9 +28,9 @@ const App: React.FC = () => {
   const [sessionId, setSessionId] = useState<string | null>(null); // NEW: Store session ID
 
   // State to hold results fetched from backend for display
-  const [extractedAttributesResult, setExtractedAttributesResult] = useState<ExtractResponse | null>(null); // Store full response
-  const [matchedDataResult, setMatchedDataResult] = useState<MatchResponse | null>(null); // Store full response
-  const [categorizedDataResult, setCategorizedDataResult] = useState<CategorizeResponse | null>(null); // Store full response
+  const [extractedAttributesResult, setExtractedAttributesResult] = useState<ExtractResponse | null>(null);
+  const [matchedDataResult, setMatchedDataResult] = useState<MatchResponse | null>(null);
+  const [categorizedDataResult, setCategorizedDataResult] = useState<CategorizeResponse | null>(null);
 
   const [loading, setLoading] = useState<{
     session: boolean; 
@@ -42,6 +43,8 @@ const App: React.FC = () => {
     match: false,
     categorize: false
   });
+  const [isParallelEnabled, setIsParallelEnabled] = useState<boolean>(true);
+  const [isTogglingParallel, setIsTogglingParallel] = useState<boolean>(false);
 
 
   const handleInputSubmit = async (sellerDesc: string, reviewsList: string[]) => {
@@ -168,6 +171,26 @@ const App: React.FC = () => {
     }
   };
 
+  const handleParallelToggle = async () => {
+    if (!apiKeyConfigured) {
+      alert("Configure API key first.");
+      return;
+    }
+    setIsTogglingParallel(true);
+    try {
+      const response = await toggleParallelProcessing();
+      setIsParallelEnabled(prev => !prev); // Toggle the state
+      console.log("Parallel processing toggled:", response.message);
+      // Optional: Show a success notification to the user
+      // alert(`Parallel processing ${!isParallelEnabled ? 'enabled' : 'disabled'}.`); // State updates after render, so use !isParallelEnabled
+    } catch (error: any) {
+      console.error('Failed to toggle parallel processing:', error);
+      alert(`Failed to toggle parallel processing: ${error.response?.data?.detail || error.message}`);
+    } finally {
+      setIsTogglingParallel(false);
+    }
+  };
+
   const buttonStyle = "inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed button-gradient interactive-blur dark:focus:ring-offset-gray-900"; // Added button-gradient, interactive-blur, removed specific bg/hover colors
 
   return (
@@ -244,6 +267,33 @@ const App: React.FC = () => {
               isLoading={loading.session} // Pass loading state to disable submit button
               isDisabled={!apiKeyConfigured} // Disable if API key not configured
             />
+            {loading.session && <p className="mt-4 text-primary dark:text-primary-400">Starting analysis session...</p>}
+
+            {/* Parallel Processing Toggle */}
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-3">Processing Options</h3>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Enable Parallel Processing 
+                </span>
+                <button
+                  onClick={handleParallelToggle}
+                  disabled={!apiKeyConfigured || isTogglingParallel}
+                  className={`relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-900 ${
+                    isParallelEnabled ? 'bg-primary-600 dark:bg-primary-500' : 'bg-gray-300 dark:bg-gray-600'
+                  } ${(!apiKeyConfigured || isTogglingParallel) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <span className="sr-only">Use parallel processing</span>
+                  <span
+                    aria-hidden="true"
+                    className={`inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200 ${
+                      isParallelEnabled ? 'translate-x-5' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+               {isTogglingParallel && <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Updating setting...</p>}
+            </div>
              {loading.session && <p className="mt-4 text-primary dark:text-primary-400">Starting analysis session...</p>}
           </section>
         )}

@@ -74,6 +74,14 @@ export const categorizeAttributes = async (data: SessionIdRequest): Promise<Cate
   return response.data; // Contains results and markdown
 };
 
+/**
+ * Toggles parallel processing on the backend.
+ */
+export const toggleParallelProcessing = async (): Promise<{ message: string }> => {
+  const response = await apiClient.get<{ message: string }>('/set_num_worker');
+  return response.data;
+};
+
 // --- Error Handling (Optional Enhancement) ---
 // You might want to add interceptors for global error handling
 apiClient.interceptors.response.use(

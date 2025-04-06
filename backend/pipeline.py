@@ -101,7 +101,7 @@ def group_attributes(attributes):
         print(f"Error during attribute grouping: {str(e)}")
         return {"error": f"Failed during grouping: {str(e)}"}
 
-def extract_review_attributes(reviews) -> list:
+def extract_review_attributes(reviews, num_workers = 15) -> list:
     """
     Step 1: Extract factual details from multiple product reviews.
     
@@ -112,13 +112,13 @@ def extract_review_attributes(reviews) -> list:
         list: List of extracted attributes from each review
     """
     print("Starting attribute extraction...")
-    with ThreadPoolExecutor(max_workers=15) as executor:
+    with ThreadPoolExecutor(max_workers=num_workers) as executor:
         responses = list(executor.map(lambda review: extract_factual_product_details(review), reviews))
     extracted_attributes = [resp.get('extracted_attributes', []) for resp in responses]
     print(f"Extracted attributes from {len(reviews)} reviews")
     return extracted_attributes
 
-def match_with_description(seller_desc, extracted_attributes_list):
+def match_with_description(seller_desc, extracted_attributes_list, num_workers = 15):
     """
     Step 2: Match extracted attributes against seller description.
     
@@ -130,7 +130,7 @@ def match_with_description(seller_desc, extracted_attributes_list):
         list: Dataframes containing matched attributes
     """
     print("Starting attribute matching...")
-    with ThreadPoolExecutor(max_workers=15) as executor:
+    with ThreadPoolExecutor(max_workers=num_workers) as executor:
         review_matchings = list(executor.map(
             lambda extracted_attribute: get_table_match(seller_desc, extracted_attribute), 
             extracted_attributes_list

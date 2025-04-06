@@ -24,7 +24,9 @@ const ReviewInput: React.FC<ReviewInputProps> = ({
 
     // Convert initial reviews array to text format
     if (initialReviews && initialReviews.length > 0) {
-      setReviewsText(initialReviews.join('\n'));
+      // Escape newlines within each review, then join reviews with a single newline
+      const processedReviews = initialReviews.map(review => review.replace(/\n/g, '\\n'));
+      setReviewsText(processedReviews.join('\n'));
     } else {
       setReviewsText(''); // Clear if initialReviews is empty or undefined
     }

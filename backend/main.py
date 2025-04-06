@@ -22,6 +22,7 @@ from typing import Dict, Any, List
 
 api_key_configured = False
 configured_api_key = None
+MAX_WORKERS = 15 # set to 1 for 
 
 # Structure: { session_id: { "input": {...}, "step1_result": {...}, "step2_result": {...}, ... } }
 session_data: Dict[str, Dict[str, Any]] = {}
@@ -67,8 +68,13 @@ async def configure_api(request: ApiKeyRequest):
     try:
         genai.configure(api_key=request.api_key)
         test_model.generate_content('test', generation_config=genai.types.GenerationConfig(max_output_tokens=1))
+        
         api_key_configured = True
         configured_api_key = request.api_key
+
+        # Reset to default value after successful configuration
+        global MAX_WORKERS
+        MAX_WORKERS = 15
         return {"message": "API key configured successfully."}
     except Exception as e:
         api_key_configured = False
@@ -101,6 +107,18 @@ async def start_session(request: StartSessionRequest):
     print(f"Started session: {session_id}")
     return {"session_id": session_id}
 
+@app.get("/set_num_worker")
+async def set_num_workers():
+    """Enable/Disable parallel processing"""
+    global MAX_WORKERS
+
+    if MAX_WORKERS == 1:
+        MAX_WORKERS = 15
+    elif MAX_WORKERS == 15:
+        MAX_WORKERS = 1
+
+    return {"message": f"Parallel processing {'enabled' if MAX_WORKERS == 15 else 'disabled'}."}
+
 @app.post("/extract", dependencies=[Depends(check_configuration)])
 async def extract_attributes_session(request: SessionIdRequest):
     """Step 1: Extract factual details for a given session."""
@@ -115,7 +133,7 @@ async def extract_attributes_session(request: SessionIdRequest):
     try:
         print(f"Running extraction for session: {request.session_id}")
         reviews = session["input"]["reviews"]
-        extracted_attributes = extract_review_attributes(reviews)
+        extracted_attributes = extract_review_attributes(reviews, num_workers=MAX_WORKERS)
         markdown_output = step1_markdown(extracted_attributes)
         result = {"extracted_attributes": extracted_attributes, "markdown": markdown_output}
         session["step1_extract"] = result # caching the result
@@ -141,7 +159,7 @@ async def match_attributes_session(request: SessionIdRequest):
         print(f"Running matching for session: {request.session_id}")
         seller_description = session["input"]["seller_description"]
         extracted_attributes = session["step1_extract"]["extracted_attributes"]
-        all_dataframes = match_with_description(seller_description, extracted_attributes)
+        all_dataframes = match_with_description(seller_description, extracted_attributes, num_workers=MAX_WORKERS)
 
         # serializable format (list of dicts)
         serializable_dataframes = [df.to_dict('records') for df in all_dataframes]
