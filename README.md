@@ -26,8 +26,8 @@ Follow individual setup instructions or run the file `setup.sh` to automate the 
 
 1.  **Clone the repository:**
     ```bash
-    git clone <repository-url>
-    cd app
+    git clone https://github.com/project-PRAISE/system-demo
+    cd system-demo
     ```
 2.  **Create and activate a virtual environment (optional but recommended):**
     ```bash
