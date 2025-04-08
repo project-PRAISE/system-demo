@@ -22,7 +22,7 @@ from typing import Dict, Any, List
 
 api_key_configured = False
 configured_api_key = None
-MAX_WORKERS = 15 # set to 1 for 
+MAX_WORKERS = 15 # set to 1 for serial operations
 
 # Structure: { session_id: { "input": {...}, "step1_result": {...}, "step2_result": {...}, ... } }
 session_data: Dict[str, Dict[str, Any]] = {}
