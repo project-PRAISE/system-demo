@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite the paper below."
+title: "PRAISE"
+authors:
+- family-names: "Qidwai"
+  given-names: "Adnan"
+- family-names: "Mukhopadhyay"
+  given-names: "Srija"
+- family-names: "Khatiwada"
+  given-names: "Prerana"
+- family-names: "Roth"
+  given-names: "Dan"
+- family-names: "Gupta"
+  given-names: "Vivek"
+preferred-citation:
+  type: conference-paper
+  title: "PRAISE: Enhancing Product Descriptions with LLM-Driven Structured Insights"
+  authors:
+  - family-names: "Qidwai"
+    given-names: "Adnan"
+  - family-names: "Mukhopadhyay"
+    given-names: "Srija"
+  - family-names: "Khatiwada"
+    given-names: "Prerana"
+  - family-names: "Roth"
+    given-names: "Dan"
+  - family-names: "Gupta"
+    given-names: "Vivek"
+  collection-title: "Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 3: System Demonstrations)"
+  year: 2025
+  month: 7
+  publisher: "Association for Computational Linguistics"
+  doi: "10.18653/v1/2025.acl-demo.62"
+  url: "https://aclanthology.org/2025.acl-demo.62/"
+  start: 644
+  end: 652
