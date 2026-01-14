@@ -96,3 +96,28 @@ The FastAPI application (`app/backend/main.py`) serves as the interface, providi
         # yarn start
         ```
     *   Open your browser and go to `http://localhost:3000` (or the port specified by the server).
+
+## Citation
+
+If you use **PRAISE** in your research, please cite our ACL 2025 demonstration paper:
+
+```bibtex
+@inproceedings{qidwai-etal-2025-praise,
+    title = "{PRAISE}: Enhancing Product Descriptions with {LLM}-Driven Structured Insights",
+    author = "Qidwai, Adnan  and
+      Mukhopadhyay, Srija  and
+      Khatiwada, Prerana  and
+      Roth, Dan  and
+      Gupta, Vivek",
+    editor = "Mishra, Pushkar  and
+      Muresan, Smaranda  and
+      Yu, Tao",
+    booktitle = "Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 3: System Demonstrations)",
+    month = jul,
+    year = "2025",
+    address = "Vienna, Austria",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2025.acl-demo.62/",
+    doi = "10.18653/v1/2025.acl-demo.62",
+    pages = "644--652"
+}
